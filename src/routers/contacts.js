@@ -1,9 +1,13 @@
 import { Router } from 'express';
+
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
 import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { parsePaginationParams } from '../middlewares/parsePaginationParams.js';
 import { parseSortParamsDecorator } from '../utils/parseSortParamsDecorator.js';
+import { authenticate } from '../middlewares/authenticate.js';
+
 import { sortByListContact } from '../bd/models/Contact.js';
 
 import * as contactControllers from '../controllers/contacts.js';
@@ -14,6 +18,8 @@ import {
 } from '../validation/contacts.js';
 
 const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get(
   '/',
