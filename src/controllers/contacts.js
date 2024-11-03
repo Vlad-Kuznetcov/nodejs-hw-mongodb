@@ -1,7 +1,9 @@
 import createHttpError from 'http-errors';
 import * as contactServices from '../services/contacts.js';
+
 // import { parseSortParams } from '../utils/parseSortParams.js';
 // import { sortByListContact } from '../bd/models/Contact.js';
+import { parseFilterParams } from '../utils/parseContactsFilter.js';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage, sortBy, sortOrder } = req.query;
@@ -10,12 +12,14 @@ export const getContactsController = async (req, res) => {
   //   ...req.query,
   //   sortByList: sortByListContact,
   // });
+  const filter = parseFilterParams(req.query);
 
   const data = await contactServices.getContacts({
     page,
     perPage,
     sortBy,
     sortOrder,
+    filter,
   });
   res.json({
     status: 200,
