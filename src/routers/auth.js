@@ -5,7 +5,15 @@ import * as authControllers from '../controllers/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
-import { userLoginSchema, userRegisterSchema } from '../validation/users.js';
+import { requestResetEmailSchema } from '../validation/users.js';
+import { requestResetEmailController } from '../controllers/auth.js';
+import { resetPasswordController } from '../controllers/auth.js';
+
+import {
+  userLoginSchema,
+  userRegisterSchema,
+  resetPasswordSchema,
+} from '../validation/users.js';
 
 const authRouter = Router();
 
@@ -27,5 +35,17 @@ authRouter.post(
 );
 
 authRouter.post('/logout', ctrlWrapper(authControllers.logoutController));
+
+authRouter.post(
+  '/request-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+
+authRouter.post(
+  '/reset-password',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(resetPasswordController),
+);
 
 export default authRouter;
