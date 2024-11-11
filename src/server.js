@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { logger } from './middlewares/logger.js';
+// import { logger } from './middlewares/logger.js';
 import cookieParser from 'cookie-parser';
 
 import { env } from './utils/env.js';
@@ -16,6 +16,7 @@ export const setupServer = () => {
 
   app.use(express.json());
   app.use(cookieParser());
+  app.use(express.static('uploads'));
 
   app.use('/auth', authRouter);
 

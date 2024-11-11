@@ -1,9 +1,15 @@
 import createHttpError from 'http-errors';
 import * as contactServices from '../services/contacts.js';
+import * as path from 'node:path';
 
 // import { parseSortParams } from '../utils/parseSortParams.js';
 // import { sortByListContact } from '../bd/models/Contact.js';
 import { parseFilterParams } from '../utils/parseContactsFilter.js';
+import { saveFileToUploadsDir } from '../utils/saveFileToUploadsDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { env } from '../utils/env.js';
+
+const enable_cloudinary = env('ENABLE_CLOUDINARY') === 'true';
 
 export const getContactsController = async (req, res) => {
   const { _id: userId } = req.user;
@@ -47,7 +53,18 @@ export const getContactByIdController = async (req, res) => {
 
 export const addContactController = async (req, res) => {
   const { _id: userId } = req.user;
-  const data = await contactServices.addContact({ ...req.body, userId });
+
+  let photo = '';
+  if (req.file) {
+    if (enable_cloudinary) {
+      photo = await saveFileToCloudinary(req.file);
+    } else {
+      await saveFileToUploadsDir(req.file, 'photos');
+      photo = path.join('photos', req.file.filename);
+    }
+  }
+
+  const data = await contactServices.addContact({ ...req.body, photo, userId });
 
   res.status(201).json({
     status: 201,
