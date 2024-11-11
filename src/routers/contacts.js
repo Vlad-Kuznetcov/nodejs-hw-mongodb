@@ -7,6 +7,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { parsePaginationParams } from '../middlewares/parsePaginationParams.js';
 import { parseSortParamsDecorator } from '../utils/parseSortParamsDecorator.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/upload.js';
 
 import { sortByListContact } from '../bd/models/Contact.js';
 
@@ -36,6 +37,7 @@ contactsRouter.get(
 
 contactsRouter.post(
   '/',
+  upload.single('photo'),
   validateBody(contactAddSchema),
   ctrlWrapper(contactControllers.addContactController),
 );
